@@ -1,2 +1,3 @@
-# mana-persian-piper-sherpa-onnx
-Mana Persian Piper (fa_IR-mana-medium) packaged for sherpa-onnx
+# Mana Persian Piper for sherpa-onnx
+
+Use with sherpa-onnx VITS: model.onnx, tokens.txt, data_dir=espeak-ng-data (22050 Hz). See Releases.

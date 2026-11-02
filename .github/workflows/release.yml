@@ -1,0 +1,30 @@
+name: release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          pip install onnx
+          curl -sL -o fa_IR-mana-medium.onnx "https://huggingface.co/MahtaFetrat/Mana-Persian-Piper/resolve/main/fa_IR-mana-medium.onnx?download=true"
+          curl -sL -o fa_IR-mana-medium.onnx.json "https://huggingface.co/MahtaFetrat/Mana-Persian-Piper/resolve/main/fa_IR-mana-medium.onnx.json?download=true"
+          python build.py
+          curl -sL -o es.tar.bz2 https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/espeak-ng-data.tar.bz2
+          D=vits-piper-fa_IR-mana-medium; mkdir $D
+          tar xjf es.tar.bz2 -C $D
+          cp model.onnx tokens.txt fa_IR-mana-medium.onnx.json $D/
+          zip -qr $D.zip $D
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: v1.0.0
+          files: |
+            model.onnx
+            tokens.txt
+            vits-piper-fa_IR-mana-medium.zip
